@@ -1,0 +1,63 @@
+.items-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 1rem;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .list-wrapper {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fafafa;
+  }
+  
+  .scroll-instruction {
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 0.5rem;
+    color: #666;
+    background: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .item-row {
+    padding: 0.5rem 1rem;
+    box-sizing: border-box;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .item-link {
+    text-decoration: none;
+    color: #333;
+    display: block;
+  }
+  
+  .item-link:hover {
+    background: #f9f9f9;
+  }
+  
+  .scroll-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(to bottom, transparent, white);
+    pointer-events: none;
+  }
+  
+  .pagination {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  

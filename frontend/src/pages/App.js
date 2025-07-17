@@ -12,7 +12,7 @@ function App() {
       </nav>
       <Routes>
         <Route path="/" element={<Items />} />
-        <Route path="/items/:id" element={<ItemDetail />} />
+        <Route exact path="/items/:id" element={<ItemDetail />} />
       </Routes>
     </DataProvider>
   );

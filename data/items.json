@@ -3,5 +3,14 @@
   { "id": 2, "name": "Noise Cancelling Headphones", "category": "Electronics", "price": 399 },
   { "id": 3, "name": "Ultra‑Wide Monitor", "category": "Electronics", "price": 999 },
   { "id": 4, "name": "Ergonomic Chair", "category": "Furniture", "price": 799 },
-  { "id": 5, "name": "Standing Desk", "category": "Furniture", "price": 1199 }
+  { "id": 5, "name": "Standing Desk", "category": "Furniture", "price": 1199 },
+  { "id": 56, "name": "Standing chair", "category": "Furniture", "price": 1199 },
+  { "id": 57, "name": "tv", "category": "Furniture", "price": 1199 },
+  { "id": 58, "name": "pen", "category": "Furniture", "price": 1199 },
+  { "id": 59, "name": "bag", "category": "Furniture", "price": 1199 },
+  { "id": 51, "name": "nightstand", "category": "Furniture", "price": 1199 },
+  { "id": 52, "name": "mobile phone", "category": "Furniture", "price": 1199 }
+
+
+  
 ]

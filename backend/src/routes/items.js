@@ -1,46 +1,65 @@
 const express = require('express');
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 const router = express.Router();
 const DATA_PATH = path.join(__dirname, '../../../data/items.json');
 
-// Utility to read data (intentionally sync to highlight blocking issue)
-function readData() {
-  const raw = fs.readFileSync(DATA_PATH);
+// Utility to read data
+//ASYNC READ FUNC
+async function readData() {
+  const raw = await fs.readFile(DATA_PATH, 'utf-8');
   return JSON.parse(raw);
 }
 
+//ASYNC WRITE FUNC
+async function writeData(data){
+  await fs.writeFile(DATA_PATH, JSON.stringify(data,null,2))
+}
 // GET /api/items
-router.get('/', (req, res, next) => {
+//ASYNC FUNC
+router.get('/', async (req, res, next) => {
   try {
-    const data = readData();
-    const { limit, q } = req.query;
-    let results = data;
+    //ASYNC CALL TO READ FUNCTION
+    let data = await readData();
 
+    //PAGINATION PARAMS
+    const { limit = 10, page = 1, q } = req.query;
+    
     if (q) {
       // Simple substring search (sub‑optimal)
-      results = results.filter(item => item.name.toLowerCase().includes(q.toLowerCase()));
+      data = data.filter(item => item.name.toLowerCase().includes(q.toLowerCase()));
     }
 
-    if (limit) {
-      results = results.slice(0, parseInt(limit));
-    }
+    //PAGINATION VARIABLES
+    const pageNum = Math.max(1,parseInt(page));
+    //limit abuse catered
+    const limitNum = Math.min(100, Math.max(1,parseInt(limit)));
+    const startIndex = (pageNum - 1) * limitNum;
+    const paginatedItems = data.slice(startIndex, startIndex + limitNum)
 
-    res.json(results);
+    //RESPONSE HAS PAGINATION INFO
+    res.json({
+      items: paginatedItems,
+      page: pageNum,
+      totalPages: Math.ceil(data.length/limitNum)
+    });
   } catch (err) {
     next(err);
   }
 });
 
 // GET /api/items/:id
-router.get('/:id', (req, res, next) => {
+//ASYNC FUNC
+router.get('/:id', async (req, res, next) => {
   try {
-    const data = readData();
-    const item = data.find(i => i.id === parseInt(req.params.id));
+
+    //ASYNC CALL TO READ FUNCTION
+    const data = await readData();
+
+
+    let item = data.find(i => i.id === parseInt(req.params.id));
     if (!item) {
-      const err = new Error('Item not found');
-      err.status = 404;
-      throw err;
+      return res.status(404).json({error: 'Item not found'});      
     }
     res.json(item);
   } catch (err) {
@@ -49,14 +68,41 @@ router.get('/:id', (req, res, next) => {
 });
 
 // POST /api/items
-router.post('/', (req, res, next) => {
+//ASYNC FUNC
+router.post('/', async (req, res, next) => {
   try {
-    // TODO: Validate payload (intentional omission)
+    
     const item = req.body;
-    const data = readData();
+
+
+    //Validate payload
+    if(!item.name || typeof item.name != 'string'){
+      return res.status(400).json({ error: 'Item "name" is required and must be a string.' });
+    }
+
+    if (item.price === undefined || typeof item.price !== 'number' || item.price < 0) {
+      return res.status(400).json({ error: 'Item "price" is required and must be a non-negative number.' });
+    }
+
+    if (!item.category || typeof item.category !== 'string') {
+      return res.status(400).json({ error: 'Item must have a category which needs to be a string' });
+    }
+
+
+
+
+    //ASYNC CALL TO READ FUNCTION
+    const data = await readData();
+
+    
     item.id = Date.now();
     data.push(item);
-    fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2));
+
+
+    //ASYNC CALL TO WRITE FUNCTION
+    await writeData(data);
+
+
     res.status(201).json(item);
   } catch (err) {
     next(err);
